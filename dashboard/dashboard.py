@@ -1,4 +1,4 @@
-!pip install scikit-learn
+streamlit run --server.install "scikit-learn"
 
 import pandas as pd
 import matplotlib.pyplot as plt
