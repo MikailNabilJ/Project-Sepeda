@@ -1,7 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import streamlit as st
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
 # Set tema seaborn
 sns.set_theme(style='dark')
@@ -62,7 +64,7 @@ except FileNotFoundError:
     st.error("File CSV tidak ditemukan.")
 except Exception as e:
     st.error(f"Terjadi kesalahan: {e}")
-
+    
 # Menampilkan rentang tanggal pada sidebar
 with st.sidebar:
     st.image("https://www.bmbike.sk/wp-content/uploads/2021/08/be07e51f-d358-4ae1-9352-a26e9b09ff07-1024x576.jpg?is-pending-load=1")
@@ -156,7 +158,7 @@ st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musi
 # Menambahkan analisis clustering
 st.subheader("Hasil Clustering dengan K-Means")
 
-# Menormalisasi data
+# Normalisasi data
 scaler = StandardScaler()
 features = ['hours', 'count_cr']
 scaled_data = scaler.fit_transform(main_df_hour[features])
@@ -178,6 +180,7 @@ plt.xlabel('Jam')
 plt.ylabel('Jumlah Penyewaan')
 plt.legend(title='Cluster')
 
+# Tampilkan plot menggunakan st.pyplot() untuk Streamlit
 st.pyplot(fig)
 st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n" 
             "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
