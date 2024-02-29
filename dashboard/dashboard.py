@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from sklearn.cluster import KMeans  # Menambahkan import KMeans
 
 # Set tema seaborn
 sns.set_theme(style='dark')
