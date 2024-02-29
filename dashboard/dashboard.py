@@ -153,7 +153,17 @@ ax.tick_params(axis='y', labelsize=30)
 st.pyplot(fig)
 st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musim Gugur**")
 
-streamlit run --server.install "scikit-learn"
+st.write("Memeriksa paket...")
+try:
+    import sklearn
+    st.write("scikit-learn sudah terinstal!")
+except ImportError:
+    st.write("scikit-learn belum terinstal. Menginstal sekarang...")
+    import subprocess
+    subprocess.check_call(["pip", "install", "scikit-learn"])
+    st.write("scikit-learn telah berhasil diinstal!")
+
+# Setelah instalasi, impor modul yang diperlukan
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
