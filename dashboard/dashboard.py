@@ -2,8 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
 
 # Set tema seaborn
 sns.set_theme(style='dark')
@@ -181,4 +179,9 @@ plt.ylabel('Jumlah Penyewaan')
 plt.legend(title='Cluster')
 
 st.pyplot(fig)
+<<<<<<< HEAD
 st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n" "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
+=======
+st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n" 
+            "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
+>>>>>>> 9c7fa66bc68f51b7f549be06ad594c487d2bf8c3
