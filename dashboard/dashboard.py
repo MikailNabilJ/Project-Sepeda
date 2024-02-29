@@ -153,6 +153,7 @@ ax.tick_params(axis='y', labelsize=30)
 st.pyplot(fig)
 st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musim Gugur**")
 
+streamlit run --server.install "scikit-learn"
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
