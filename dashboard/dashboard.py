@@ -1,8 +1,3 @@
-import streamlit._server_util.streamlit_requires as requirements
-
-if not requirements.check_streamlit("0.87.0"):
-    requirements.install_streamlit("0.87.0")
-    
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
