@@ -12,11 +12,4 @@ pip install numpy pandas scipy matplotlib seaborn jupyter streamlit babel
 streamlit run dashboard.py
 ```
 
-Link dashboard streamlit : https://dashboardbikesharing.streamlit.app/
-# Bike-Project
-# Bike-Project
-# Project-Bike-Streamlit
-# Project-Bike-Streamlit
-# Project-Bike-Streamlit
-# Tugas-Project-Dashboard-Dicoding-Data-Analytics
-# Project-Sepeda
+Link dashboard streamlit : https://project-sepeda-dt2tmnflcjnvxnyseusgju.streamlit.app/

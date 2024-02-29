@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
 
 # Set tema seaborn
 sns.set_theme(style='dark')
@@ -46,31 +48,36 @@ def macem_season(day_df):
 
 # Menggunakan try-except untuk membaca file CSV
 try:
-    days_df = pd.read_csv("day_clean.csv")
-    hours_df = pd.read_csv("hour_clean.csv")
+    days_df = pd.read_csv("dashboard/day_clean.csv")
+    hours_df = pd.read_csv("dashboard/hour_clean.csv")
+    
+    # Mengubah kolom tanggal menjadi tipe data datetime
+    datetime_columns = ["dteday"]
+    days_df[datetime_columns] = days_df[datetime_columns].apply(pd.to_datetime)
+    hours_df[datetime_columns] = hours_df[datetime_columns].apply(pd.to_datetime)
+    
+    # Menentukan rentang tanggal minimum dan maksimum
+    min_date_days = days_df["dteday"].min()
+    max_date_days = days_df["dteday"].max()
+    
 except FileNotFoundError:
     st.error("File CSV tidak ditemukan.")
 except Exception as e:
     st.error(f"Terjadi kesalahan: {e}")
 
-# Mengubah kolom tanggal menjadi tipe data datetime
-datetime_columns = ["dteday"]
-days_df[datetime_columns] = days_df[datetime_columns].apply(pd.to_datetime)
-hours_df[datetime_columns] = hours_df[datetime_columns].apply(pd.to_datetime)
-
-# Menentukan rentang tanggal minimum dan maksimum
-min_date_days = days_df["dteday"].min()
-max_date_days = days_df["dteday"].max()
-
 # Menampilkan rentang tanggal pada sidebar
 with st.sidebar:
-    st.image("https://storage.googleapis.com/gweb-uniblog-publish-prod/original_images/image1_hH9B4gs.jpg")
+    st.image("https://www.bmbike.sk/wp-content/uploads/2021/08/be07e51f-d358-4ae1-9352-a26e9b09ff07-1024x576.jpg?is-pending-load=1")
     start_date, end_date = st.date_input(
         label='Rentang Waktu',
         min_value=min_date_days,
         max_value=max_date_days,
         value=[min_date_days, max_date_days]
     )
+
+# Mengkonversi start_date dan end_date menjadi tipe data datetime64[ns]
+start_date = pd.to_datetime(start_date)
+end_date = pd.to_datetime(end_date)
 
 # Memfilter dataframe berdasarkan rentang tanggal
 main_df_days = days_df[(days_df["dteday"] >= start_date) & (days_df["dteday"] <= end_date)]
@@ -96,20 +103,22 @@ with col3:
     st.metric("Total Casual", value=total_casual)
 
 # Menghitung dan menampilkan grafik jam paling banyak dan paling sedikit disewa
-hour_count_df = get_total_count_by_hour_df(main_df_hour)
+    
 sum_order_items_df = sum_order(main_df_hour)
 
 st.subheader("Pada jam berapa yang paling banyak dan paling sedikit disewa?")
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(35, 15))
 
-sns.barplot(x="hours", y=("count_cr", "sum"), data=sum_order_items_df.head(5), palette=["#D3D3D3", "#D3D3D3", "#90CAF9", "#D3D3D3", "#D3D3D3"], ax=ax[0])
+# Pemanggilan sns.barplot() untuk subplot pertama
+sns.barplot(x="hours", y="count_cr", data=sum_order_items_df.head(5), palette="viridis", ax=ax[0])
 ax[0].set_ylabel(None)
 ax[0].set_xlabel("Hours (PM)", fontsize=30)
 ax[0].set_title("Jam dengan banyak penyewa sepeda", loc="center", fontsize=30)
 ax[0].tick_params(axis='y', labelsize=35)
 ax[0].tick_params(axis='x', labelsize=30)
 
-sns.barplot(x="hours", y=("count_cr", "sum"), data=sum_order_items_df.sort_values(by="hours", ascending=True).head(5), palette=["#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#90CAF9"], ax=ax[1])
+# Pemanggilan sns.barplot() untuk subplot kedua
+sns.barplot(x="hours", y="count_cr", data=sum_order_items_df.sort_values(by="hours", ascending=True).head(5), palette="viridis", ax=ax[1])
 ax[1].set_ylabel(None)
 ax[1].set_xlabel("Hours (AM)",  fontsize=30)
 ax[1].set_title("Jam dengan sedikit penyewa sepeda", loc="center", fontsize=30)
@@ -120,24 +129,57 @@ ax[1].tick_params(axis='y', labelsize=35)
 ax[1].tick_params(axis='x', labelsize=30)
 
 st.pyplot(fig)
+st.markdown("**Berdasarkan hasil gambar yang diatas bahwa sewa sepeda yang paling banyak di jam 17:00 (PM) dan pada jam 04:00 (AM) merupakan yang paling sedikit disewa**")
+
 
 # Menghitung dan menampilkan grafik musim apa yang paling banyak disewa
 season_df = macem_season(main_df_days)
 
 st.subheader("Musim apa yang paling banyak disewa?")
-colors = ["#D3D3D3", "#D3D3D3", "#D3D3D3", "#90CAF9"]
+
 fig, ax = plt.subplots(figsize=(20, 10))
 sns.barplot(
-    y=("count_cr", "sum"),
+
     x="season",
+    y="count_cr",  # Ganti "sum" jika diperlukan
     data=season_df.sort_values(by="season", ascending=False),
-    palette=colors,
+    palette="viridis",  # Atur palet warna sesuai kebutuhan
     ax=ax
 )
 ax.set_title("Grafik Antar Musim", loc="center", fontsize=50)
-ax.set_ylabel(None)
-ax.set_xlabel(None)
+ax.set_ylabel("Total Penggunaan Sepeda", fontsize=30)  # Sesuaikan label sumbu y
+ax.set_xlabel("Musim", fontsize=30)  # Sesuaikan label sumbu x
 ax.tick_params(axis='x', labelsize=35)
 ax.tick_params(axis='y', labelsize=30)
 
 st.pyplot(fig)
+st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musim Gugur**")
+
+# Menambahkan analisis clustering
+st.subheader("Hasil Clustering dengan K-Means")
+
+# Menormalisasi data
+scaler = StandardScaler()
+features = ['hours', 'count_cr']
+scaled_data = scaler.fit_transform(main_df_hour[features])
+
+# Melakukan clustering dengan K-Means
+n_clusters = 3
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+main_df_hour['cluster'] = kmeans.fit_predict(scaled_data)
+
+# Visualisasi hasil clustering
+st.write(main_df_hour[['hours', 'count_cr', 'cluster']])
+
+# Visualisasi hasil clustering
+st.subheader("Visualisasi Hasil Clustering dengan K-Means")
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.scatterplot(data=main_df_hour, x='hours', y='count_cr', hue='cluster', palette='Set1', ax=ax)
+plt.title('Hasil Clustering dengan K-Means')
+plt.xlabel('Jam')
+plt.ylabel('Jumlah Penyewaan')
+plt.legend(title='Cluster')
+
+st.pyplot(fig)
+st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n"
+            "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
