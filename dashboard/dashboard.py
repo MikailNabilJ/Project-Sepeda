@@ -46,8 +46,8 @@ def macem_season(day_df):
 
 # Menggunakan try-except untuk membaca file CSV
 try:
-    days_df = pd.read_csv("dashboard/day_clean.csv")
-    hours_df = pd.read_csv("dashboard/hour_clean.csv")
+    days_df = pd.read_csv("dashboard/dashboard/day_clean.csv")
+    hours_df = pd.read_csv("dashboard/dashboard/hour_clean.csv")
     
     # Mengubah kolom tanggal menjadi tipe data datetime
     datetime_columns = ["dteday"]
