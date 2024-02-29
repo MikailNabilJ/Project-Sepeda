@@ -1,3 +1,8 @@
+import streamlit._server_util.streamlit_requires as requirements
+
+if not requirements.check_streamlit("0.87.0"):
+    requirements.install_streamlit("0.87.0")
+    
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -5,21 +10,6 @@ import streamlit as st
 
 # Set tema seaborn
 sns.set_theme(style='dark')
-
-# Install paket jika belum terinstal
-st.write("Memeriksa paket...")
-try:
-    import sklearn
-    st.write("scikit-learn sudah terinstal!")
-except ImportError:
-    st.write("scikit-learn belum terinstal. Menginstal sekarang...")
-    import subprocess
-    subprocess.check_call(["pip", "install", "scikit-learn"])
-    st.write("scikit-learn telah berhasil diinstal!")
-
-# Setelah instalasi, impor modul yang diperlukan
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
 
 # Fungsi untuk menghitung total penggunaan sepeda per jam
 def get_total_count_by_hour_df(hour_df):
