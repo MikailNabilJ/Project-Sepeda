@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import os
 
 # Set tema seaborn
 sns.set_theme(style='dark')
@@ -43,6 +44,14 @@ def sum_order(hour_df):
 def macem_season(day_df):
     season_df = day_df.groupby(by="season").count_cr.sum().reset_index()
     return season_df
+
+# Mencetak alamat lengkap dari file day_clean.csv
+day_clean_path = os.path.join(os.getcwd(), "dashboard", "day_clean.csv")
+st.write("dashboard/day_clean.csv:", day_clean_path)
+
+# Mencetak alamat lengkap dari file hour_clean.csv
+hour_clean_path = os.path.join(os.getcwd(), "dashboard", "hour_clean.csv")
+st.write("dashboard/hour_clean.csv:", hour_clean_path)
 
 # Menggunakan try-except untuk membaca file CSV
 try:
