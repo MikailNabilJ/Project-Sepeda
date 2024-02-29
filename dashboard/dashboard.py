@@ -152,3 +152,54 @@ ax.tick_params(axis='y', labelsize=30)
 
 st.pyplot(fig)
 st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musim Gugur**")
+
+# Membuat RFM Analysis
+# 1. Recency: Menghitung hari sejak terakhir kali penggunaan sepeda
+recent_date = main_df_days['dteday'].max()
+main_df_days['recency'] = (recent_date - main_df_days['dteday']).dt.days
+
+# 2. Frequency: Menghitung jumlah penggunaan sepeda per pelanggan (dalam hal ini, per hari)
+frequency_df = main_df_days.groupby('user_id')['count_cr'].count().reset_index()
+frequency_df.columns = ['user_id', 'frequency']
+
+# 3. Monetary: Menghitung total pengeluaran per pelanggan (dalam hal ini, jumlah penggunaan sepeda)
+monetary_df = main_df_days.groupby('user_id')['count_cr'].sum().reset_index()
+monetary_df.columns = ['user_id', 'monetary']
+
+# Menggabungkan data Recency, Frequency, dan Monetary
+rfm_df = pd.merge(recent_df, frequency_df, on='user_id')
+rfm_df = pd.merge(rfm_df, monetary_df, on='user_id')
+
+# Menampilkan hasil RFM Analysis
+st.subheader('RFM Analysis')
+st.write(rfm_df.head())
+
+# Analisis Cluster RFM
+# Menggunakan K-Means Clustering untuk mengelompokkan pelanggan berdasarkan RFM
+from sklearn.cluster import KMeans
+
+# Memilih jumlah cluster yang tepat menggunakan metode Elbow
+X = rfm_df[['recency', 'frequency', 'monetary']]
+inertia = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, random_state=42)
+    kmeans.fit(X)
+    inertia.append(kmeans.inertia_)
+
+# Menampilkan plot Elbow
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, 11), inertia, marker='o', linestyle='--')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Inertia')
+plt.title('Elbow Method for Optimal k')
+plt.show()
+
+# Berdasarkan grafik Elbow, pilih jumlah cluster yang optimal dan lakukan clustering
+k = 3  # Misalnya, pilih 3 cluster
+kmeans = KMeans(n_clusters=k, random_state=42)
+rfm_df['cluster'] = kmeans.fit_predict(X)
+
+# Menampilkan hasil clustering
+st.subheader('Hasil Clustering RFM')
+st.write(rfm_df[['user_id', 'cluster']])
+
