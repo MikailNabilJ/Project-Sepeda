@@ -181,9 +181,4 @@ plt.ylabel('Jumlah Penyewaan')
 plt.legend(title='Cluster')
 
 st.pyplot(fig)
-st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n"
-<<<<<<< HEAD
-            "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
-=======
-            "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
->>>>>>> 983d4c87e6dff29c8dafdffe690d6c92fd6b3fad
+st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n" "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
