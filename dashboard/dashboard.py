@@ -152,33 +152,3 @@ ax.tick_params(axis='y', labelsize=30)
 
 st.pyplot(fig)
 st.markdown("**Sewa sepeda yang paling banyak jatuh kepada season Fall atau Musim Gugur**")
-
-# Menambahkan analisis clustering
-st.subheader("Hasil Clustering dengan K-Means")
-
-# Normalisasi data
-scaler = StandardScaler()
-features = ['hours', 'count_cr']
-scaled_data = scaler.fit_transform(main_df_hour[features])
-
-# Melakukan clustering dengan K-Means
-n_clusters = 3
-kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-main_df_hour['cluster'] = kmeans.fit_predict(scaled_data)
-
-# Visualisasi hasil clustering
-st.write(main_df_hour[['hours', 'count_cr', 'cluster']])
-
-# Visualisasi hasil clustering
-st.subheader("Visualisasi Hasil Clustering dengan K-Means")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.scatterplot(data=main_df_hour, x='hours', y='count_cr', hue='cluster', palette='Set1', ax=ax)
-plt.title('Hasil Clustering dengan K-Means')
-plt.xlabel('Jam')
-plt.ylabel('Jumlah Penyewaan')
-plt.legend(title='Cluster')
-
-# Tampilkan plot menggunakan st.pyplot() untuk Streamlit
-st.pyplot(fig)
-st.markdown("**Jam dengan tingkat penyewaan tertinggi adalah jam 17.**\n\n" 
-            "**Jam dengan tingkat penyewaan terendah adalah semua jam di cluster 1 (warna biru).**")
